@@ -65,61 +65,43 @@ export default function Pricing() {
   };
 
   const plans = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    price: '$99',
-    period: '/month',
-    description: 'Perfect for small clinics getting started',
-    features: [
-      '75 calls/month',
-      'Google Calendar sync',
-      '1 linked phone number',
-      'Email support'
-    ],
-    limitations: [
-      'No call recordings',
-      'No analytics'
-    ],
-    buttonText: 'Choose Plan',
-    popular: false
-  },
-  {
-    id: 'pro',
-    name: 'Pro',
-    price: '$149',
-    period: '/month',
-    description: 'Advanced features for growing practices',
-    features: [
-      '100 calls/month',
-      'Analytics enabled',
-      'Multi-user access',
-      'Priority support'
-    ],
-    limitations: [
-      'No call recordings'
-    ],
-    buttonText: 'Choose Plan',
-    popular: true
-  },
-  {
-    id: 'business',
-    name: 'Business',
-    price: null,
-    period: '',
-    description: 'Enterprise solution with unlimited calls',
-    features: [
-      'Unlimited calls',
-      'Analytics enabled',
-      'Call recordings',
-      'Dedicated account manager',
-      'Custom integrations'
-    ],
-    limitations: [],
-    buttonText: 'Contact Sales',
-    popular: false
-  }
-];
+    {
+      id: 'starter',
+      name: 'Starter',
+      price: '$99',
+      period: '/month',
+      description: 'Perfect for small clinics getting started',
+      features: [
+        '75 calls/month',
+        'Google Calendar sync',
+        '1 linked phone number',
+        'Email support'
+      ],
+      limitations: [
+        'No call recordings',
+        'No analytics'
+      ],
+      buttonText: 'Choose Plan',
+      popular: false
+    },
+    {
+      id: 'pro',
+      name: 'Pro',
+      price: '$149',
+      period: '/month',
+      description: 'Advanced features for growing practices',
+      features: [
+        '100 calls/month',
+        'Analytics enabled',
+        'Multi-user access',
+        'Priority support'
+      ],
+      limitations: [
+        'No call recordings'
+      ],
+      buttonText: 'Choose Plan',
+      popular: true
+    },
     {
       id: 'business',
       name: 'Business',
@@ -127,13 +109,11 @@ export default function Pricing() {
       period: '',
       description: 'Enterprise solution with unlimited calls',
       features: [
-        'Unlimited AI calls',
+        'Unlimited calls',
+        'Analytics enabled',
         'Call recordings + replay',
-        'Advanced analytics + exports',
         'Dedicated account manager',
-        'Custom integrations',
-        'SLA guarantee',
-        'White-label options'
+        'Custom integrations'
       ],
       limitations: [],
       buttonText: 'Contact Sales',
