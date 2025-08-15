@@ -93,8 +93,9 @@ export default function Pricing() {
       features: [
         '100 calls/month',
         'Analytics enabled',
-        'Multi-user access',
-        'Priority support'
+        'Google Calendar sync',
+        '1 linked phone number',
+        'Email support'
       ],
       limitations: [
         'No call recordings'
@@ -112,8 +113,8 @@ export default function Pricing() {
         'Unlimited calls',
         'Analytics enabled',
         'Call recordings + replay',
-        'Dedicated account manager',
-        'Custom integrations'
+        'Google Calendar sync',
+        'Priority support'
       ],
       limitations: [],
       buttonText: 'Contact Sales',
