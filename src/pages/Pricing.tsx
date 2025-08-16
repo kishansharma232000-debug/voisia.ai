@@ -401,7 +401,7 @@ export default function Pricing() {
                     >
                       Send Message
                     </button>
-                    </div>
+                  </div>
                 </form>
               </>
             )}
