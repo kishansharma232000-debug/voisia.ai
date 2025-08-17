@@ -90,13 +90,10 @@ export default function Dashboard() {
               <p className="text-yellow-700">Please choose a plan to activate your AI assistant.</p>
             </div>
           </div>
-          <Link
-            to="/pricing" 
-            className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold"
-          >
+          <button className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
             <CreditCard className="w-5 h-5" />
-            <span>Choose Plan</span>
-          </Link>
+            <span>Contact Sales</span>
+          </button>
         </div>
       )}
 
@@ -159,12 +156,9 @@ export default function Dashboard() {
 
             {!hasActivePlan && (
               <div className="mb-6">
-                <Link
-                  to="/pricing"
-                  className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-                >
-                  <span>Choose Plan to Activate</span>
-                </Link>
+                <button className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                  <span>Contact Sales to Activate</span>
+                </button>
               </div>
             )}
 

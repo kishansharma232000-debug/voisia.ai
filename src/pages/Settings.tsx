@@ -62,12 +62,9 @@ export default function Settings() {
               <p className="text-yellow-700">Activate a plan to access settings and customize your AI assistant.</p>
             </div>
           </div>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold"
-          >
-            <span>Choose Plan</span>
-          </Link>
+          <button className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
+            <span>Contact Sales</span>
+          </button>
         </div>
       )}
 

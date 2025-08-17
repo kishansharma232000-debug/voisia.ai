@@ -36,12 +36,9 @@ export default function ConnectPhone() {
               <p className="text-yellow-700">Upgrade your plan to unlock voice assistant integration.</p>
             </div>
           </div>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold"
-          >
-            <span>Choose Plan</span>
-          </Link>
+          <button className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
+            <span>Contact Sales</span>
+          </button>
         </div>
       )}
 
@@ -59,12 +56,9 @@ export default function ConnectPhone() {
             <div className="text-center py-8">
               <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 font-medium mb-4">Phone connection requires an active plan</p>
-              <Link
-                to="/pricing"
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-              >
-                View Plans
-              </Link>
+              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                Contact Sales
+              </button>
             </div>
           ) : !isConnected ? (
             <div className="space-y-6">

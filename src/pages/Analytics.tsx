@@ -29,12 +29,9 @@ export default function Analytics() {
               <p className="text-yellow-700">Upgrade to Pro or Business plan to access detailed analytics and insights.</p>
             </div>
           </div>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold"
-          >
-            <span>Choose Plan</span>
-          </Link>
+          <button className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
+            <span>Contact Sales</span>
+          </button>
         </div>
       )}
 
@@ -48,12 +45,9 @@ export default function Analytics() {
               <p className="text-blue-700">Upgrade to Pro or Business to access call analytics and detailed insights.</p>
             </div>
           </div>
-          <Link
-            to="/pricing"
-            className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-          >
-            <span>Upgrade Plan</span>
-          </Link>
+          <button className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+            <span>Contact Sales</span>
+          </button>
         </div>
       )}
 

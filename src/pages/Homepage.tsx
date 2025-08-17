@@ -44,7 +44,6 @@ export default function Homepage() {
             
             <nav className="hidden md:flex items-center space-x-8">
               <a href="#demo" className="text-gray-600 hover:text-blue-600 transition-colors">Demo</a>
-              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors">Pricing</a>
               <a href="#faq" className="text-gray-600 hover:text-blue-600 transition-colors">FAQ</a>
               <Link to="/login" className="text-gray-600 hover:text-blue-600 transition-colors">Login</Link>
               <Link to="/signup" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
@@ -66,7 +65,6 @@ export default function Homepage() {
           <div className="md:hidden bg-white border-t">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <a href="#demo" className="block px-3 py-2 text-gray-600 hover:text-blue-600">Demo</a>
-              <a href="#pricing" className="block px-3 py-2 text-gray-600 hover:text-blue-600">Pricing</a>
               <a href="#faq" className="block px-3 py-2 text-gray-600 hover:text-blue-600">FAQ</a>
               <Link to="/login" className="block px-3 py-2 text-gray-600 hover:text-blue-600">Login</Link>
               <Link to="/signup" className="block px-3 py-2 bg-blue-600 text-white rounded-lg text-center">
@@ -97,12 +95,6 @@ export default function Homepage() {
                 <Play className="w-5 h-5" />
                 <span className="font-semibold">Hear Live Demo</span>
               </button>
-              <a
-                href="#pricing"
-                className="flex items-center space-x-2 border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-all duration-300"
-              >
-                <span className="font-semibold">View Pricing</span>
-              </a>
             </div>
           </div>
         </div>
@@ -239,130 +231,6 @@ export default function Homepage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Simple, Transparent Pricing
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose the plan that fits your clinic's needs. All plans include setup support and can be upgraded anytime.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Starter Plan */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 hover:shadow-xl transition-shadow">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Starter</h3>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">$49</span>
-                <span className="text-gray-600">/month</span>
-              </div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>75 AI calls/month</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>Google Calendar sync</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>1 linked phone number</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>Dashboard + analytics</span>
-                </li>
-                <li className="flex items-center space-x-3 text-gray-400">
-                  <X className="w-5 h-5" />
-                  <span>No call recordings</span>
-                </li>
-              </ul>
-              <Link
-                to="/signup"
-                className="w-full bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-colors block text-center"
-              >
-                Get Started
-              </Link>
-            </div>
-
-            {/* Pro Plan */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-blue-600 hover:shadow-xl transition-shadow relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold">Most Popular</span>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Pro</h3>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">$99</span>
-                <span className="text-gray-600">/month</span>
-              </div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>250 AI calls/month</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>Advanced service configs</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>Retry logic</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>Multi-user login</span>
-                </li>
-                <li className="flex items-center space-x-3 text-gray-400">
-                  <X className="w-5 h-5" />
-                  <span>No call recordings</span>
-                </li>
-              </ul>
-              <Link
-                to="/signup"
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors block text-center"
-              >
-                Choose Plan
-              </Link>
-            </div>
-
-            {/* Business Plan */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200 hover:shadow-xl transition-shadow">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Business</h3>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">$149</span>
-                <span className="text-gray-600">/month</span>
-              </div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>500 AI calls/month</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span className="font-semibold">Call recordings + replay</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>CSV analytics export</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>Premium support + onboarding</span>
-                </li>
-              </ul>
-              <Link
-                to="/signup"
-                className="w-full bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-colors block text-center"
-              >
-                Choose Plan
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Why Choose Us Section */}
       <section className="py-20 bg-white">
@@ -560,7 +428,6 @@ export default function Homepage() {
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#demo" className="hover:text-white transition-colors">Demo</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
                 <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
               </ul>
             </div>
