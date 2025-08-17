@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import Pricing from './pages/Pricing';
 import Homepage from './pages/Homepage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
