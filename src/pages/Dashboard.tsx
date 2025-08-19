@@ -1,15 +1,45 @@
 import React, { useState } from 'react';
-import { Phone, Calendar, Clock, Play, TrendingUp, Users, CheckCircle, Lock, CreditCard, Power } from 'lucide-react';
+import { Phone, Calendar, Clock, Play, TrendingUp, Users, CheckCircle, Lock, CreditCard, Power, Crown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import ContactModal from '../components/ContactModal';
 
 export default function Dashboard() {
   const { user, updateAssistantStatus } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   // Check if user has an active plan
   const hasActivePlan = user?.plan !== null;
   const isAssistantActive = user?.assistantActive || false;
+
+  const handleChoosePlan = async (planType: string) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase.auth.getUser();
+      if (error) throw error;
+      
+      // Update user plan in Supabase
+      const { error: updateError } = await supabase
+        .from('users_meta')
+        .upsert({
+          id: user.id,
+          plan: planType,
+          updated_at: new Date().toISOString()
+        });
+      
+      if (updateError) throw updateError;
+      
+      // Refresh user data
+      await refreshUser();
+      
+      // Show success message or redirect
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating plan:', error);
+    }
+  };
 
   const handleToggleAssistant = async () => {
     if (!hasActivePlan) return;
