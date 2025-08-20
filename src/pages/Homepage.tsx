@@ -231,6 +231,124 @@ export default function Homepage() {
       </section>
 
       {/* Pricing Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              One Simple Plan. Pay As You Grow.
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Transparent pricing with no hidden fees. Start small and scale as your business grows.
+            </p>
+          </div>
+
+          <div className="flex justify-center">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 max-w-md w-full relative overflow-hidden">
+              {/* Popular badge */}
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <span className="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-semibold">
+                  Most Popular
+                </span>
+              </div>
+
+              <div className="text-center mb-8 pt-4">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">VoisiaAI Pro</h3>
+                
+                {/* Platform Fee */}
+                <div className="mb-6">
+                  <div className="flex items-baseline justify-center mb-2">
+                    <span className="text-5xl font-bold text-gray-900">$29</span>
+                    <span className="text-xl text-gray-600 ml-2">/month</span>
+                  </div>
+                  <p className="text-gray-600 font-medium">Platform Fee</p>
+                </div>
+
+                {/* Usage Rate */}
+                <div className="bg-blue-50 rounded-xl p-4 mb-6">
+                  <div className="flex items-baseline justify-center mb-1">
+                    <span className="text-2xl font-bold text-blue-600">$0.20</span>
+                    <span className="text-blue-600 ml-2">/minute</span>
+                  </div>
+                  <p className="text-blue-700 text-sm">Only pay for what you use</p>
+                </div>
+
+                {/* Trust elements */}
+                <div className="flex justify-center space-x-6 mb-8 text-sm text-gray-600">
+                  <div className="flex items-center space-x-1">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span>No hidden fees</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span>Cancel anytime</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div className="space-y-4 mb-8">
+                <h4 className="font-semibold text-gray-900 text-center mb-6">Everything included:</h4>
+                
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">24/7 AI voice assistant</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Google Calendar integration</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Multilingual support</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Real-time appointment booking</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Transcripts for every call</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Global availability</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Easy dashboard with usage tracking</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <Link
+                to="/signup"
+                className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+              >
+                <span>Get Started</span>
+                <CheckCircle className="w-5 h-5" />
+              </Link>
+
+              <p className="text-center text-sm text-gray-500 mt-4">
+                Start your 7-day free trial • No credit card required
+              </p>
+            </div>
+          </div>
+
+          {/* Additional info */}
+          <div className="text-center mt-12">
+            <p className="text-gray-600 mb-4">
+              <strong>Example:</strong> 100 minutes of calls = $29 platform fee + $20 usage = $49/month total
+            </p>
+            <div className="flex justify-center space-x-8 text-sm text-gray-500">
+              <span>✓ No setup fees</span>
+              <span>✓ No contracts</span>
+              <span>✓ 24/7 support</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Why Choose Us Section */}
       <section className="py-20 bg-white">
