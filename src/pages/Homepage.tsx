@@ -257,7 +257,7 @@ export default function Homepage() {
                 {/* Platform Fee */}
                 <div className="mb-6">
                   <div className="flex items-baseline justify-center mb-2">
-                    <span className="text-5xl font-bold text-gray-900">$29</span>
+                    <span className="text-5xl font-bold text-gray-900">$49</span>
                     <span className="text-xl text-gray-600 ml-2">/month</span>
                   </div>
                   <p className="text-gray-600 font-medium">Platform Fee</p>
@@ -339,7 +339,7 @@ export default function Homepage() {
           {/* Additional info */}
           <div className="text-center mt-12">
             <p className="text-gray-600 mb-4">
-              <strong>Example:</strong> 100 minutes of calls = $29 platform fee + $20 usage = $49/month total
+              <strong>Example:</strong> 100 minutes of calls = $49 platform fee + $20 usage = $69/month total
             </p>
             <div className="flex justify-center space-x-8 text-sm text-gray-500">
               <span>✓ No setup fees</span>
