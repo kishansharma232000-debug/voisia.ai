@@ -330,9 +330,6 @@ export default function Homepage() {
                 <CheckCircle className="w-5 h-5" />
               </Link>
 
-              <p className="text-center text-sm text-gray-500 mt-4">
-                Start your 7-day free trial • No credit card required
-              </p>
             </div>
           </div>
 
