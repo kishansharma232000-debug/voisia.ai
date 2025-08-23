@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
-import { Phone, CheckCircle, AlertCircle, Copy, ExternalLink, Lock } from 'lucide-react';
+import { Phone, CheckCircle, AlertCircle, Copy, ExternalLink, Lock, Bot, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useVapiAssistant } from '../hooks/useVapiAssistant';
 
 export default function ConnectPhone() {
   const { user } = useAuth();
+  const { assistant, isLoading: assistantLoading, error: assistantError, createAssistant, updateAssistant } = useVapiAssistant();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isConnected, setIsConnected] = useState(!!user?.phoneNumber);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [showAssistantForm, setShowAssistantForm] = useState(false);
+  const [assistantForm, setAssistantForm] = useState({
+    businessName: user?.clinicName || '',
+    timezone: 'America/New_York'
+  });
 
   const hasActivePlan = user?.plan !== null;
+  const hasAssistant = !!assistant;
 
   const handleConnect = async () => {
     if (!hasActivePlan) return;
@@ -19,6 +27,24 @@ export default function ConnectPhone() {
     await new Promise(resolve => setTimeout(resolve, 2000));
     setIsConnected(true);
     setIsVerifying(false);
+  };
+
+  const handleCreateAssistant = async () => {
+    try {
+      await createAssistant(assistantForm.businessName, assistantForm.timezone);
+      setShowAssistantForm(false);
+    } catch (error) {
+      // Error is handled by the hook
+    }
+  };
+
+  const handleUpdateAssistant = async () => {
+    try {
+      await updateAssistant(assistantForm.businessName, assistantForm.timezone);
+      setShowAssistantForm(false);
+    } catch (error) {
+      // Error is handled by the hook
+    }
   };
 
   const connectedNumber = '+1 (555) 123-4567';
@@ -48,6 +74,135 @@ export default function ConnectPhone() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Vapi Assistant Status */}
+        <div className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 ${!hasActivePlan ? 'opacity-60' : ''}`}>
+          <h3 className="text-xl font-semibold text-gray-900 mb-6">AI Voice Assistant</h3>
+          
+          {!hasActivePlan ? (
+            <div className="text-center py-8">
+              <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600 font-medium mb-4">Voice assistant requires an active plan</p>
+              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                Contact Sales
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {assistantError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                  <p className="text-red-700 text-sm">{assistantError}</p>
+                </div>
+              )}
+
+              <div className="flex items-center space-x-4">
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                  hasAssistant ? 'bg-green-100' : 'bg-gray-100'
+                }`}>
+                  <Bot className={`w-6 h-6 ${hasAssistant ? 'text-green-600' : 'text-gray-400'}`} />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">
+                    {hasAssistant ? 'Assistant Created' : 'Assistant Not Created'}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {hasAssistant 
+                      ? `Business: ${assistant.business_name} • Timezone: ${assistant.timezone}`
+                      : 'Create your AI voice assistant to handle calls'
+                    }
+                  </p>
+                </div>
+              </div>
+
+              {!showAssistantForm ? (
+                <div className="flex space-x-4">
+                  {hasAssistant ? (
+                    <>
+                      <button
+                        onClick={() => {
+                          setAssistantForm({
+                            businessName: assistant.business_name,
+                            timezone: assistant.timezone
+                          });
+                          setShowAssistantForm(true);
+                        }}
+                        className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
+                        disabled={assistantLoading}
+                      >
+                        <Settings className="w-4 h-4" />
+                        <span>Update Assistant</span>
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => setShowAssistantForm(true)}
+                      className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
+                      disabled={assistantLoading}
+                    >
+                      <Bot className="w-5 h-5" />
+                      <span>Create AI Assistant</span>
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Business Name
+                    </label>
+                    <input
+                      type="text"
+                      value={assistantForm.businessName}
+                      onChange={(e) => setAssistantForm(prev => ({ ...prev, businessName: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Enter your business name"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Timezone
+                    </label>
+                    <select
+                      value={assistantForm.timezone}
+                      onChange={(e) => setAssistantForm(prev => ({ ...prev, timezone: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="America/New_York">Eastern Time</option>
+                      <option value="America/Chicago">Central Time</option>
+                      <option value="America/Denver">Mountain Time</option>
+                      <option value="America/Los_Angeles">Pacific Time</option>
+                      <option value="America/Phoenix">Arizona Time</option>
+                      <option value="America/Anchorage">Alaska Time</option>
+                      <option value="Pacific/Honolulu">Hawaii Time</option>
+                    </select>
+                  </div>
+
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => setShowAssistantForm(false)}
+                      className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors"
+                      disabled={assistantLoading}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={hasAssistant ? handleUpdateAssistant : handleCreateAssistant}
+                      className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                      disabled={assistantLoading || !assistantForm.businessName.trim()}
+                    >
+                      {assistantLoading 
+                        ? (hasAssistant ? 'Updating...' : 'Creating...') 
+                        : (hasAssistant ? 'Update' : 'Create')
+                      }
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Connection Form */}
         <div className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 ${!hasActivePlan ? 'opacity-60' : ''}`}>
           <h3 className="text-xl font-semibold text-gray-900 mb-6">Phone Setup</h3>
@@ -174,7 +329,19 @@ export default function ConnectPhone() {
       <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-6">Connection Status</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="text-center">
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
+              hasActivePlan && hasAssistant ? 'bg-green-100' : 'bg-gray-100'
+            }`}>
+              <Bot className={`w-6 h-6 ${hasActivePlan && hasAssistant ? 'text-green-600' : 'text-gray-400'}`} />
+            </div>
+            <p className="font-semibold text-gray-900">AI Assistant</p>
+            <p className={`text-sm ${hasActivePlan && hasAssistant ? 'text-green-600' : 'text-gray-500'}`}>
+              {hasActivePlan && hasAssistant ? 'Created' : 'Not Created'}
+            </p>
+          </div>
+
           <div className="text-center">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
               hasActivePlan && isConnected ? 'bg-green-100' : 'bg-gray-100'
@@ -189,13 +356,13 @@ export default function ConnectPhone() {
 
           <div className="text-center">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
-              hasActivePlan && isConnected ? 'bg-green-100' : 'bg-gray-100'
+              hasActivePlan && isConnected && hasAssistant ? 'bg-green-100' : 'bg-gray-100'
             }`}>
-              <CheckCircle className={`w-6 h-6 ${hasActivePlan && isConnected ? 'text-green-600' : 'text-gray-400'}`} />
+              <CheckCircle className={`w-6 h-6 ${hasActivePlan && isConnected && hasAssistant ? 'text-green-600' : 'text-gray-400'}`} />
             </div>
-            <p className="font-semibold text-gray-900">AI Assistant</p>
-            <p className={`text-sm ${hasActivePlan && isConnected ? 'text-green-600' : 'text-gray-500'}`}>
-              {hasActivePlan && isConnected ? 'Active' : 'Inactive'}
+            <p className="font-semibold text-gray-900">Call Handling</p>
+            <p className={`text-sm ${hasActivePlan && isConnected && hasAssistant ? 'text-green-600' : 'text-gray-500'}`}>
+              {hasActivePlan && isConnected && hasAssistant ? 'Active' : 'Inactive'}
             </p>
           </div>
 

@@ -14,6 +14,7 @@ interface User {
   timezone?: string;
   language?: string;
   voiceStyle?: string;
+  hasVapiAssistant?: boolean;
 }
 
 interface AuthContextType {
@@ -70,7 +71,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       googleConnected: false,
       timezone: 'America/New_York',
       language: 'English',
-      voiceStyle: 'Friendly'
+      voiceStyle: 'Friendly',
+      hasVapiAssistant: false
     };
   };
 
