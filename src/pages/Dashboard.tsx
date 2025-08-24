@@ -2,14 +2,22 @@ import React, { useState } from 'react';
 import { Phone, Calendar, Clock, Play, TrendingUp, Users, CheckCircle, Lock, CreditCard, Power } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import CreateAssistantButton from '../components/CreateAssistantButton';
+import { useAssistantStatus } from '../hooks/useAssistantStatus';
 
 export default function Dashboard() {
   const { user, updateAssistantStatus } = useAuth();
+  const { hasAssistant, assistantId, refreshStatus } = useAssistantStatus();
   const [isLoading, setIsLoading] = useState(false);
 
   // Check if user has an active plan
   const hasActivePlan = user?.plan !== null;
   const isAssistantActive = user?.assistantActive || false;
+
+  const handleAssistantCreated = (newAssistantId: string) => {
+    refreshStatus();
+    // Could also show a success toast here
+  };
 
   const handleToggleAssistant = async () => {
     if (!hasActivePlan) return;
@@ -114,22 +122,137 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
           <div className="text-center">
             <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${
-              hasActivePlan && isAssistantActive ? 'bg-green-100' : 'bg-gray-100'
+              hasActivePlan && hasAssistant && isAssistantActive ? 'bg-green-100' : 'bg-gray-100'
             }`}>
               <Power className={`w-10 h-10 ${
-                hasActivePlan && isAssistantActive ? 'text-green-600' : 'text-gray-400'
+                hasActivePlan && hasAssistant && isAssistantActive ? 'text-green-600' : 'text-gray-400'
               }`} />
             </div>
             
             <h2 className="text-2xl font-bold text-gray-900 mb-2">AI Voice Assistant</h2>
             <p className="text-gray-600 mb-6">
               {hasActivePlan 
-                ? (isAssistantActive ? 'Your AI assistant is active and ready to handle calls' : 'Click to activate your AI assistant')
+                ? (hasAssistant 
+                    ? (isAssistantActive ? 'Your AI assistant is active and ready to handle calls' : 'Click to activate your AI assistant')
+                    : 'Create your AI assistant to start handling calls'
+                  )
                 : 'Please choose a plan to activate your AI assistant'
               }
             </p>
             
-            <div className="flex items-center justify-center mb-6">
+            {hasAssistant && (
+              <div className="flex items-center justify-center mb-6">
+                <button
+                  onClick={handleToggleAssistant}
+                  disabled={!hasActivePlan || isLoading}
+                  className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                    hasActivePlan && isAssistantActive 
+                      ? 'bg-green-600' 
+                      : hasActivePlan 
+                      ? 'bg-gray-200' 
+                      : 'bg-gray-200 cursor-not-allowed opacity-50'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                      hasActivePlan && isAssistantActive ? 'translate-x-9' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+                <span className={`ml-4 text-sm font-medium ${
+                  hasActivePlan && isAssistantActive ? 'text-green-600' : 'text-gray-500'
+                }`}>
+                  {isLoading ? 'Updating...' : (hasActivePlan && isAssistantActive ? 'Active' : 'Inactive')}
+                </span>
+              </div>
+            )}
+
+            {!hasAssistant && hasActivePlan && (
+              <div className="mb-6">
+                <CreateAssistantButton 
+                  onAssistantCreated={handleAssistantCreated}
+                  businessName={user?.clinicName || ''}
+                />
+              </div>
+            )}
+
+            {!hasActivePlan && (
+              <div className="mb-6">
+                <button className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                  <span>Contact Sales to Activate</span>
+                </button>
+              </div>
+            )}
+
+            {hasAssistant && (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                <div className="bg-blue-50 rounded-lg p-3">
+                  <p className="font-semibold text-blue-800">Assistant ID</p>
+                  <p className="text-blue-600 font-mono text-xs">{assistantId?.slice(0, 8)}...</p>
+                </div>
+                <div className="bg-green-50 rounded-lg p-3">
+                  <p className="font-semibold text-green-800">Calendar</p>
+                  <p className="text-green-600">{user?.googleConnected ? 'Connected' : 'Setup required'}</p>
+                </div>
+                <div className="bg-purple-50 rounded-lg p-3">
+                  <p className="font-semibold text-purple-800">Plan</p>
+                  <p className="text-purple-600 capitalize">{user?.plan || 'None'}</p>
+                </div>
+              </div>
+            )}
+
+            {!hasAssistant && hasActivePlan && (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                <div className="bg-blue-50 rounded-lg p-3">
+                  <p className="font-semibold text-blue-800">Phone Number</p>
+                  <p className="text-blue-600">{user?.phoneNumber || 'Not connected'}</p>
+                </div>
+                <div className="bg-green-50 rounded-lg p-3">
+                  <p className="font-semibold text-green-800">Calendar</p>
+                  <p className="text-green-600">{user?.googleConnected ? 'Connected' : 'Setup required'}</p>
+                </div>
+                <div className="bg-purple-50 rounded-lg p-3">
+                  <p className="font-semibold text-purple-800">Plan</p>
+                  <p className="text-purple-600 capitalize">{user?.plan || 'None'}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Assistant Status Card - Only show if user has active plan */}
+      {hasActivePlan && (
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Assistant Status</h3>
+            <div className="flex items-center space-x-4">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                hasAssistant ? 'bg-green-100' : 'bg-gray-100'
+              }`}>
+                <CheckCircle className={`w-6 h-6 ${hasAssistant ? 'text-green-600' : 'text-gray-400'}`} />
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900">
+                  {hasAssistant ? '✅ Assistant Created' : '❌ Assistant Not Created'}
+                </p>
+                <p className="text-sm text-gray-600">
+                  {hasAssistant 
+                    ? `Assistant ID: ${assistantId?.slice(0, 12)}...`
+                    : 'Create your AI assistant to start handling calls'
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Legacy AI Assistant Toggle - Remove this section since we moved it above */}
+      {false && (
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+            <div className="text-center">
               <button
                 onClick={handleToggleAssistant}
                 disabled={!hasActivePlan || isLoading}
@@ -154,33 +277,9 @@ export default function Dashboard() {
               </span>
             </div>
 
-            {!hasActivePlan && (
-              <div className="mb-6">
-                <button className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
-                  <span>Contact Sales to Activate</span>
-                </button>
-              </div>
-            )}
-
-            {hasActivePlan && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-                <div className="bg-blue-50 rounded-lg p-3">
-                  <p className="font-semibold text-blue-800">Phone Number</p>
-                  <p className="text-blue-600">{user?.phoneNumber || 'Not connected'}</p>
-                </div>
-                <div className="bg-green-50 rounded-lg p-3">
-                  <p className="font-semibold text-green-800">Calendar</p>
-                  <p className="text-green-600">{user?.googleConnected ? 'Connected' : 'Setup required'}</p>
-                </div>
-                <div className="bg-purple-50 rounded-lg p-3">
-                  <p className="font-semibold text-purple-800">Plan</p>
-                  <p className="text-purple-600 capitalize">{user?.plan || 'None'}</p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
-      </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
