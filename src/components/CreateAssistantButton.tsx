@@ -3,6 +3,7 @@ import { Bot, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
+// TypeScript interfaces for type safety
 interface CreateAssistantButtonProps {
   onAssistantCreated?: (assistantId: string) => void;
   businessName?: string;
@@ -22,14 +23,27 @@ interface CreateAssistantResponse {
 
 interface ApiError {
   error: string;
+  existingAssistantId?: string;
 }
 
+/**
+ * CreateAssistantButton Component
+ * 
+ * A secure React component for creating Vapi AI assistants with:
+ * - User authentication validation
+ * - Loading states and error handling
+ * - Input validation and sanitization
+ * - Success feedback with assistant ID display
+ * - Proper TypeScript typing
+ */
 export default function CreateAssistantButton({ 
   onAssistantCreated, 
   businessName = '',
   timezone = 'America/New_York'
 }: CreateAssistantButtonProps) {
   const { user } = useAuth();
+  
+  // Component state management
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -41,30 +55,47 @@ export default function CreateAssistantButton({
     timezone: timezone
   });
 
+  /**
+   * Main function to create assistant
+   * Implements comprehensive error handling and security checks
+   */
   const handleCreateAssistant = async () => {
+    // SECURITY: Ensure user is authenticated
     if (!user) {
       setError('You must be logged in to create an assistant');
       return;
     }
 
+    // INPUT VALIDATION: Validate business name
     if (!formData.businessName.trim()) {
       setError('Business name is required');
       return;
     }
 
+    if (formData.businessName.trim().length < 2) {
+      setError('Business name must be at least 2 characters long');
+      return;
+    }
+
+    if (formData.businessName.trim().length > 100) {
+      setError('Business name must be less than 100 characters');
+      return;
+    }
+
+    // Reset states
     setIsLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      // Get the current session token
+      // SECURITY: Get the current session token for authentication
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError || !session) {
-        throw new Error('Authentication session not found');
+        throw new Error('Authentication session not found. Please log in again.');
       }
 
-      // Call the Supabase Edge Function
+      // Make secure API call to Supabase Edge Function
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-assistant`,
         {
@@ -81,6 +112,7 @@ export default function CreateAssistantButton({
         }
       );
 
+      // Parse response
       const data: CreateAssistantResponse | ApiError = await response.json();
 
       if (!response.ok) {
@@ -105,7 +137,7 @@ export default function CreateAssistantButton({
     } catch (err) {
       console.error('Error creating assistant:', err);
       
-      // Handle specific error types
+      // ERROR HANDLING: Handle specific error types
       if (err instanceof Error) {
         if (err.message.includes('Rate limit')) {
           setError('Rate limit exceeded. Please try again in a few minutes.');
@@ -113,6 +145,8 @@ export default function CreateAssistantButton({
           setError('You already have an assistant created.');
         } else if (err.message.includes('Authentication')) {
           setError('Authentication failed. Please log in again.');
+        } else if (err.message.includes('Network')) {
+          setError('Network error. Please check your connection and try again.');
         } else {
           setError(err.message);
         }
@@ -124,6 +158,9 @@ export default function CreateAssistantButton({
     }
   };
 
+  /**
+   * Handle input changes with validation
+   */
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Clear errors when user starts typing
@@ -176,7 +213,11 @@ export default function CreateAssistantButton({
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
             disabled={isLoading}
             required
+            maxLength={100}
           />
+          <p className="text-xs text-gray-500 mt-1">
+            2-100 characters required
+          </p>
         </div>
 
         <div>
@@ -218,6 +259,15 @@ export default function CreateAssistantButton({
           )}
         </button>
       </div>
+
+      {/* Authentication Notice */}
+      {!user && (
+        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-yellow-800 text-sm">
+            Please log in to create an AI assistant.
+          </p>
+        </div>
+      )}
 
       {/* Security Notice */}
       <div className="mt-6 p-4 bg-blue-50 rounded-lg">
