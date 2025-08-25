@@ -6,9 +6,12 @@ import CreateAssistantButton from '../components/CreateAssistantButton';
 import { useAssistantStatus } from '../hooks/useAssistantStatus';
 import CreateAssistantButton from '../components/CreateAssistantButton';
 import { useAssistantStatus } from '../hooks/useAssistantStatus';
+import CreateAssistantButton from '../components/CreateAssistantButton';
+import { useAssistantStatus } from '../hooks/useAssistantStatus';
 
 export default function Dashboard() {
   const { user, updateAssistantStatus } = useAuth();
+  const { hasAssistant, assistantId, refreshStatus } = useAssistantStatus();
   const { hasAssistant, assistantId, refreshStatus } = useAssistantStatus();
   const { hasAssistant, assistantId, refreshStatus } = useAssistantStatus();
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +19,11 @@ export default function Dashboard() {
   // Check if user has an active plan
   const hasActivePlan = user?.plan !== null;
   const isAssistantActive = user?.assistantActive || false;
+
+  const handleAssistantCreated = (newAssistantId: string) => {
+    refreshStatus();
+    // Could also show a success toast here
+  };
 
   const handleAssistantCreated = (newAssistantId: string) => {
     refreshStatus();
