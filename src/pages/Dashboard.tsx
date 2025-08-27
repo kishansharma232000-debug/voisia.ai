@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { AssistantSignupForm } from '../components/AssistantSignupForm';
+import AssistantSignupForm from '../components/AssistantSignupForm';
 import { useAssistantStatus } from '../hooks/useAssistantStatus';
 import { Building2, Phone, BarChart3, Settings } from 'lucide-react';
 
