@@ -11,7 +11,8 @@ import {
   Menu,
   X,
   Crown,
-  Circle
+  Circle,
+  Link as LinkIcon
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -32,6 +33,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const navigation = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Connect Phone', href: '/connect-phone', icon: Phone },
+    { name: 'Google Calendar', href: '/google-calendar', icon: Calendar },
+    { name: 'Booking History', href: '/booking-history', icon: History },
     { name: 'Appointments', href: '/appointments', icon: Calendar },
     { name: 'Call Logs', href: '/call-logs', icon: History },
     { 

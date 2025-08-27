@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchUserMeta = async (userId: string) => {
     const { data, error } = await supabase
       .from('users_meta')
-      .select('clinic_name, phone_number, clinic_connected, plan, assistant_active')
+      .select('clinic_name, phone_number, clinic_connected, plan, assistant_active, google_connected')
       .eq('id', userId)
       .single();
     
@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       clinicConnected: userMeta?.clinic_connected || false,
       plan: userMeta?.plan || null,
       assistantActive: userMeta?.assistant_active || false,
-      googleConnected: false,
+      googleConnected: userMeta?.google_connected || false,
       timezone: 'America/New_York',
       language: 'English',
       voiceStyle: 'Friendly',

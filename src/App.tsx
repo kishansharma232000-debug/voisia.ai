@@ -8,6 +8,9 @@ import ClinicOnboarding from './pages/ClinicOnboarding';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
+import GoogleCalendar from './pages/GoogleCalendar';
+import ConnectPhone from './pages/ConnectPhone';
+import BookingHistory from './pages/BookingHistory';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 
@@ -27,6 +30,27 @@ function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <Dashboard />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/connect-phone" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <ConnectPhone />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/google-calendar" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <GoogleCalendar />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/booking-history" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <BookingHistory />
             </DashboardLayout>
           </ProtectedRoute>
         } />
