@@ -27,7 +27,14 @@ export default function Login() {
       });
       
       if (loginError) {
-        setError(loginError.message);
+        // Provide user-friendly error messages
+        if (loginError.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else if (loginError.message.includes('Email not confirmed')) {
+          setError('Please check your email and click the confirmation link before signing in.');
+        } else {
+          setError(loginError.message);
+        }
         return;
       }
       
