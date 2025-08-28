@@ -3,10 +3,12 @@ import { Phone, CheckCircle, AlertCircle, Copy, ExternalLink, Lock, Bot, Setting
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useVapiAssistant } from '../hooks/useVapiAssistant';
+import { useGoogleCalendar } from '../hooks/useGoogleCalendar';
 
 export default function ConnectPhone() {
   const { user } = useAuth();
   const { assistant, isLoading: assistantLoading, error: assistantError, createAssistant, updateAssistant } = useVapiAssistant();
+  const { isConnected: calendarConnected } = useGoogleCalendar();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isConnected, setIsConnected] = useState(!!user?.phoneNumber);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -368,13 +370,13 @@ export default function ConnectPhone() {
 
           <div className="text-center">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
-              hasActivePlan && user?.googleConnected ? 'bg-green-100' : 'bg-yellow-100'
+              hasActivePlan && calendarConnected ? 'bg-green-100' : 'bg-yellow-100'
             }`}>
-              <AlertCircle className={`w-6 h-6 ${hasActivePlan && user?.googleConnected ? 'text-green-600' : 'text-yellow-600'}`} />
+              <AlertCircle className={`w-6 h-6 ${hasActivePlan && calendarConnected ? 'text-green-600' : 'text-yellow-600'}`} />
             </div>
             <p className="font-semibold text-gray-900">Calendar Sync</p>
-            <p className={`text-sm ${hasActivePlan && user?.googleConnected ? 'text-green-600' : 'text-yellow-600'}`}>
-              {hasActivePlan && user?.googleConnected ? 'Connected' : 'Setup Required'}
+            <p className={`text-sm ${hasActivePlan && calendarConnected ? 'text-green-600' : 'text-yellow-600'}`}>
+              {hasActivePlan && calendarConnected ? 'Connected' : 'Setup Required'}
             </p>
           </div>
         </div>

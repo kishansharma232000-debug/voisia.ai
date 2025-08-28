@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
-import { Calendar, CheckCircle, ExternalLink, RefreshCw, Lock } from 'lucide-react';
+import { Calendar, CheckCircle, ExternalLink, RefreshCw, Lock, Clock, Play, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useGoogleCalendar } from '../hooks/useGoogleCalendar';
 
 export default function GoogleCalendar() {
   const { user } = useAuth();
-  const [isConnected, setIsConnected] = useState(!!user?.googleConnected);
-  const [isConnecting, setIsConnecting] = useState(false);
+  const {
+    isConnected,
+    isConnecting,
+    error,
+    calendarInfo,
+    availability,
+    isLoadingAvailability,
+    connectCalendar,
+    disconnectCalendar,
+    fetchAvailability,
+    clearError,
+  } = useGoogleCalendar();
 
   const hasActivePlan = user?.plan !== null;
 
-  const handleConnect = async () => {
+  const handleConnect = () => {
     if (!hasActivePlan) return;
-    
-    setIsConnecting(true);
-    // Simulate Google OAuth flow
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsConnected(true);
-    setIsConnecting(false);
+    clearError();
+    connectCalendar();
   };
 
-  const handleDisconnect = () => {
-    setIsConnected(false);
-  };
-
-  const calendarInfo = {
-    name: 'Wilson Dental Care - Main Calendar',
-    email: 'calendar@wilsondentalcare.com',
-    lastSync: '2 minutes ago',
-    eventsToday: 8,
-    upcomingSlots: 12
+  const handleTestIntegration = () => {
+    clearError();
+    fetchAvailability();
   };
 
   return (
@@ -46,6 +46,25 @@ export default function GoogleCalendar() {
           </div>
           <button className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
             <span>Contact Sales</span>
+          </button>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && (
+        <div className="mb-8 bg-red-50 border border-red-200 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <AlertTriangle className="w-6 h-6 text-red-600" />
+            <div>
+              <h3 className="text-lg font-semibold text-red-800">Connection Error</h3>
+              <p className="text-red-700">{error}</p>
+            </div>
+          </div>
+          <button
+            onClick={clearError}
+            className="mt-4 text-red-600 hover:text-red-800 text-sm font-medium"
+          >
+            Dismiss
           </button>
         </div>
       )}
@@ -112,24 +131,58 @@ export default function GoogleCalendar() {
 
               <div className="bg-green-50 rounded-lg p-4">
                 <h5 className="font-semibold text-green-800 mb-2">Connected Calendar:</h5>
-                <p className="text-green-700 font-medium">{calendarInfo.name}</p>
-                <p className="text-green-600 text-sm">{calendarInfo.email}</p>
+                <p className="text-green-700 font-medium">{calendarInfo?.name || 'Primary Calendar'}</p>
+                <p className="text-green-600 text-sm">{calendarInfo?.email}</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-blue-50 rounded-lg">
-                  <p className="text-2xl font-bold text-blue-600">{calendarInfo.eventsToday}</p>
-                  <p className="text-sm text-blue-700">Events Today</p>
+              {/* Test Integration Button */}
+              <button
+                onClick={handleTestIntegration}
+                disabled={isLoadingAvailability}
+                className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
+              >
+                {isLoadingAvailability ? (
+                  <>
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                    <span>Loading Availability...</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-5 h-5" />
+                    <span>Test Calendar Integration</span>
+                  </>
+                )}
+              </button>
+
+              {/* Available Slots Display */}
+              {availability.length > 0 && (
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <h5 className="font-semibold text-blue-800 mb-3">Next 5 Available Time Slots:</h5>
+                  <div className="space-y-2">
+                    {availability.slice(0, 5).map((slot, index) => (
+                      <div key={index} className="flex items-center justify-between bg-white rounded p-3">
+                        <div className="flex items-center space-x-3">
+                          <Clock className="w-4 h-4 text-blue-600" />
+                          <span className="font-medium text-gray-900">
+                            {new Date(slot.date).toLocaleDateString('en-US', { 
+                              weekday: 'short', 
+                              month: 'short', 
+                              day: 'numeric' 
+                            })}
+                          </span>
+                        </div>
+                        <span className="text-blue-600 font-medium">
+                          {slot.startTime} - {slot.endTime}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="text-center p-3 bg-purple-50 rounded-lg">
-                  <p className="text-2xl font-bold text-purple-600">{calendarInfo.upcomingSlots}</p>
-                  <p className="text-sm text-purple-700">Available Slots</p>
-                </div>
-              </div>
+              )}
 
               <div className="flex space-x-4">
                 <button
-                  onClick={handleDisconnect}
+                  onClick={disconnectCalendar}
                   className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Disconnect
@@ -140,7 +193,7 @@ export default function GoogleCalendar() {
               </div>
 
               <div className="text-center text-sm text-gray-500">
-                Last synced: {calendarInfo.lastSync}
+                Last synced: {calendarInfo?.lastSync || 'Never'}
               </div>
             </div>
           )}
