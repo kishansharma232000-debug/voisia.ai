@@ -85,7 +85,7 @@ export function useVapiIntegration(): UseVapiIntegrationReturn {
 
       // Make secure API call to Supabase Edge Function
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/vapi-proxy`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-vapi-assistant`,
         {
           method: 'POST',
           headers: {
@@ -93,6 +93,7 @@ export function useVapiIntegration(): UseVapiIntegrationReturn {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            user_id: user.id,
             businessName: data.businessName.trim(),
             timezone: data.timezone,
             language: data.language || 'en',

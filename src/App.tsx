@@ -11,6 +11,7 @@ import Settings from './pages/Settings';
 import GoogleCalendar from './pages/GoogleCalendar';
 import ConnectPhone from './pages/ConnectPhone';
 import BookingHistory from './pages/BookingHistory';
+import Appointments from './pages/Appointments';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 
@@ -57,10 +58,7 @@ function App() {
         <Route path="/appointments" element={
           <ProtectedRoute>
             <DashboardLayout>
-              <div className="text-center py-16">
-                <h1 className="text-2xl font-bold text-gray-900 mb-4">Appointments</h1>
-                <p className="text-gray-600">Appointment management coming soon...</p>
-              </div>
+              <Appointments />
             </DashboardLayout>
           </ProtectedRoute>
         } />

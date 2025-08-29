@@ -70,6 +70,7 @@ export function useVapiAssistant(): UseVapiAssistantReturn {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            user_id: user.id,
             business_name: businessName,
             timezone: timezone,
           }),

@@ -127,7 +127,7 @@ export default function AssistantSignupForm() {
 
       // Make secure API call to Supabase Edge Function
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/vapi-proxy`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-vapi-assistant`,
         {
           method: 'POST',
           headers: {
@@ -135,6 +135,7 @@ export default function AssistantSignupForm() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            user_id: user.id,
             businessName: formData.businessName.trim(),
             timezone: formData.timezone,
             language: formData.language,
