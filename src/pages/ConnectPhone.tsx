@@ -177,6 +177,10 @@ export default function ConnectPhone() {
                       <option value="America/Phoenix">Arizona Time</option>
                       <option value="America/Anchorage">Alaska Time</option>
                       <option value="Pacific/Honolulu">Hawaii Time</option>
+                      <option value="Europe/London">London Time</option>
+                      <option value="Europe/Paris">Paris Time</option>
+                      <option value="Asia/Tokyo">Tokyo Time</option>
+                      <option value="Australia/Sydney">Sydney Time</option>
                     </select>
                   </div>
 
@@ -370,12 +374,12 @@ export default function ConnectPhone() {
 
           <div className="text-center">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
-              hasActivePlan && calendarConnected ? 'bg-green-100' : 'bg-yellow-100'
+              hasActivePlan && calendarConnected ? 'bg-green-100' : 'bg-orange-100'
             }`}>
-              <AlertCircle className={`w-6 h-6 ${hasActivePlan && calendarConnected ? 'text-green-600' : 'text-yellow-600'}`} />
+              <Calendar className={`w-6 h-6 ${hasActivePlan && calendarConnected ? 'text-green-600' : 'text-orange-600'}`} />
             </div>
             <p className="font-semibold text-gray-900">Calendar Sync</p>
-            <p className={`text-sm ${hasActivePlan && calendarConnected ? 'text-green-600' : 'text-yellow-600'}`}>
+            <p className={`text-sm ${hasActivePlan && calendarConnected ? 'text-green-600' : 'text-orange-600'}`}>
               {hasActivePlan && calendarConnected ? 'Connected' : 'Setup Required'}
             </p>
           </div>

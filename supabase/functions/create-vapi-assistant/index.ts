@@ -10,6 +10,7 @@ interface CreateAssistantRequest {
   business_name: string;
   timezone: string;
   user_id?: string;
+  calendar_integration?: boolean;
 }
 
 Deno.serve(async (req: Request) => {
@@ -63,7 +64,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // Parse request body
-    const { business_name, timezone, user_id }: CreateAssistantRequest = await req.json();
+    const { business_name, timezone, user_id, calendar_integration }: CreateAssistantRequest = await req.json();
 
     if (!business_name || !timezone || !user_id) {
       return new Response(
@@ -104,7 +105,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Create assistant in Vapi
+    // Create assistant configuration with calendar functions
     const assistantConfig = {
       name: business_name,
       timezone: timezone,
@@ -114,23 +115,28 @@ Deno.serve(async (req: Request) => {
         messages: [
           {
             role: "system",
-            content: `You are a professional AI assistant for ${business_name}. Your primary role is to help callers book appointments.
+            content: `You are a professional AI receptionist for ${business_name}. Your primary role is to help callers book appointments and answer basic questions about the business.
 
-IMPORTANT: You have access to two functions for calendar management:
-1. get_availability(user_id) - Check available appointment slots
-2. book_appointment(user_id, date, time, duration, title, caller_name, caller_number) - Book appointments
+IMPORTANT INSTRUCTIONS:
+1. Always be professional, friendly, and helpful
+2. When someone wants to book an appointment, follow this exact process:
+   a) Get their full name
+   b) Get their phone number
+   c) Ask what type of appointment they need
+   d) Use get_availability to check available times
+   e) Present options clearly
+   f) When they choose a time, use book_appointment to confirm
 
-When someone wants to book an appointment:
-1. First, get their name and phone number
-2. Call get_availability with user_id: "${user_id}" to check available times
-3. Present the available options clearly
-4. When they choose a time, call book_appointment with all details
-5. Confirm the booking details
+CALENDAR FUNCTIONS:
+- get_availability: Check what appointment times are available
+- book_appointment: Actually book the appointment in the calendar
 
-Always be professional, friendly, and helpful. If you encounter any errors, explain them clearly and offer alternatives.`
+For any complex medical questions or emergencies, politely explain that you'll transfer them to a staff member or have someone call them back.
+
+Always confirm appointment details before booking and provide clear confirmation after booking.`
           }
         ],
-        functions: [
+        functions: calendar_integration ? [
           {
             name: "get_availability",
             description: "Get available appointment time slots from the calendar",
@@ -183,12 +189,13 @@ Always be professional, friendly, and helpful. If you encounter any errors, expl
               required: ["user_id", "date", "time", "duration", "title", "caller_name", "caller_number"]
             }
           }
-        ]
+        ] : []
       },
       voice: {
         provider: "11labs",
         voiceId: "sarah"
-      }
+      },
+      serverUrl: calendar_integration ? `${Deno.env.get("SUPABASE_URL")}/functions/v1/vapi-calendar-functions` : undefined
     };
 
     const vapiResponse = await fetch("https://api.vapi.ai/assistants", {

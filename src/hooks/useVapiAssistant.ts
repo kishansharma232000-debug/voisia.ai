@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import type { CreateAssistantRequest, UpdateAssistantRequest } from '../types/vapi';
 
 interface Assistant {
   id: string;
@@ -54,6 +55,14 @@ export function useVapiAssistant(): UseVapiAssistantReturn {
   const createAssistant = async (businessName: string, timezone: string) => {
     if (!user) throw new Error('User not authenticated');
 
+    // Validate inputs
+    if (!businessName.trim()) {
+      throw new Error('Business name is required');
+    }
+    if (businessName.trim().length < 2 || businessName.trim().length > 100) {
+      throw new Error('Business name must be between 2 and 100 characters');
+    }
+
     try {
       setIsLoading(true);
       setError(null);
@@ -61,6 +70,7 @@ export function useVapiAssistant(): UseVapiAssistantReturn {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error('No active session');
 
+      // Create assistant with calendar integration
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-vapi-assistant`,
         {
@@ -73,6 +83,7 @@ export function useVapiAssistant(): UseVapiAssistantReturn {
             user_id: user.id,
             business_name: businessName,
             timezone: timezone,
+            calendar_integration: true,
           }),
         }
       );
@@ -83,7 +94,9 @@ export function useVapiAssistant(): UseVapiAssistantReturn {
       }
 
       const result = await response.json();
-      setAssistant(result.assistant);
+      
+      // Refresh assistant data
+      await fetchAssistant();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create assistant');
       throw err;

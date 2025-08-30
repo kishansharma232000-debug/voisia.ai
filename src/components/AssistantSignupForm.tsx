@@ -140,6 +140,7 @@ export default function AssistantSignupForm() {
             timezone: formData.timezone,
             language: formData.language,
             voiceStyle: formData.voiceStyle,
+            calendar_integration: true,
           }),
         }
       );

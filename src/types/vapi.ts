@@ -24,6 +24,7 @@ export interface CreateAssistantRequest {
   timezone: string;
   language?: string;
   voiceStyle?: string;
+  calendarIntegration?: boolean;
 }
 
 export interface CreateAssistantResponse {
@@ -39,6 +40,7 @@ export interface UpdateAssistantRequest {
   timezone?: string;
   language?: string;
   voiceStyle?: string;
+  calendarIntegration?: boolean;
 }
 
 export interface UpdateAssistantResponse {
@@ -51,6 +53,22 @@ export interface VapiApiError {
   error: string;
   details?: string;
   code?: string;
+}
+
+// Calendar integration types
+export interface CalendarFunction {
+  name: string;
+  description: string;
+  parameters: {
+    type: string;
+    properties: Record<string, any>;
+    required: string[];
+  };
+}
+
+export interface VapiCalendarConfig {
+  functions: CalendarFunction[];
+  webhookUrl: string;
 }
 
 export interface AssistantStatus {
