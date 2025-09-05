@@ -3,6 +3,7 @@ import { Calendar, User, Clock, Phone, Filter, Search, MoreVertical, CheckCircle
 import { useAuth } from '../contexts/AuthContext';
 import { useAppointments } from '../hooks/useAppointments';
 import type { Appointment } from '../types/appointments';
+import { INDUSTRY_CONFIGS } from '../types/industry';
 
 export default function Appointments() {
   const { user } = useAuth();
@@ -23,6 +24,11 @@ export default function Appointments() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const hasActivePlan = user?.plan !== null;
+  
+  // Get industry-specific labels
+  const industryConfig = INDUSTRY_CONFIGS[user?.industryType || 'clinic'];
+  const appointmentLabel = industryConfig.appointmentLabel;
+  const bookingLabel = industryConfig.bookingLabel;
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
@@ -115,8 +121,8 @@ export default function Appointments() {
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Appointments</h1>
-            <p className="text-gray-600 mt-2">Manage appointments booked through your AI assistant</p>
+            <h1 className="text-3xl font-bold text-gray-900">{appointmentLabel}</h1>
+            <p className="text-gray-600 mt-2">Manage {appointmentLabel.toLowerCase()} booked through your AI assistant</p>
           </div>
           <button
             onClick={refreshAppointments}
@@ -189,7 +195,7 @@ export default function Appointments() {
         {/* Header with filters */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-            <h3 className="text-xl font-semibold text-gray-900">Recent Appointments</h3>
+            <h3 className="text-xl font-semibold text-gray-900">Recent {appointmentLabel}</h3>
             
             {hasActivePlan && (
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
@@ -198,7 +204,7 @@ export default function Appointments() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search appointments..."
+                    placeholder={`Search ${appointmentLabel.toLowerCase()}...`}
                     value={searchTerm}
                     onChange={(e) => handleSearch(e.target.value)}
                     className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm"
@@ -245,11 +251,11 @@ export default function Appointments() {
               ) : appointments.length === 0 ? (
                 <div className="text-center py-16">
                   <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 font-medium mb-2">No appointments found</p>
+                  <p className="text-gray-600 font-medium mb-2">No {appointmentLabel.toLowerCase()} found</p>
                   <p className="text-gray-500 text-sm">
                     {filters.status !== 'all' || filters.dateRange !== 'all' || filters.search
                       ? 'Try adjusting your filters to see more results'
-                      : 'Appointments booked through your AI assistant will appear here'
+                      : `${appointmentLabel} booked through your AI assistant will appear here`
                     }
                   </p>
                 </div>
@@ -360,7 +366,7 @@ export default function Appointments() {
           ) : (
             <div className="text-center py-16">
               <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 font-medium mb-4">Appointment management requires an active plan</p>
+              <p className="text-gray-600 font-medium mb-4">{appointmentLabel} management requires an active plan</p>
               <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
                 Contact Sales
               </button>
@@ -401,7 +407,7 @@ export default function Appointments() {
             <div className="text-center p-6 bg-blue-50 rounded-lg">
               <Calendar className="w-12 h-12 text-blue-600 mx-auto mb-4" />
               <h4 className="font-semibold text-gray-900 mb-2">View Calendar</h4>
-              <p className="text-gray-600 text-sm mb-4">Open your Google Calendar to see all appointments</p>
+              <p className="text-gray-600 text-sm mb-4">Open your Google Calendar to see all {appointmentLabel.toLowerCase()}</p>
               <a
                 href="https://calendar.google.com"
                 target="_blank"

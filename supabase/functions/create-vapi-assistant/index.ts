@@ -115,7 +115,7 @@ Deno.serve(async (req: Request) => {
         messages: [
           {
             role: "system",
-            content: `You are a professional AI receptionist for ${business_name}. Your primary role is to help callers book appointments and answer basic questions about the business.
+            content: `You are a professional AI receptionist for ${business_name}. Your primary role is to help callers book appointments, answer frequently asked questions, and provide information about the business.
 
 IMPORTANT INSTRUCTIONS:
 1. Always be professional, friendly, and helpful
@@ -126,10 +126,14 @@ IMPORTANT INSTRUCTIONS:
    d) Use get_availability to check available times
    e) Present options clearly
    f) When they choose a time, use book_appointment to confirm
+3. For questions, first try to use search_faqs to find relevant answers from the business's FAQ database
+4. If you find a relevant FAQ answer, provide it naturally in conversation
+5. If no FAQ matches, provide general helpful information or offer to have someone call back
 
 CALENDAR FUNCTIONS:
 - get_availability: Check what appointment times are available
 - book_appointment: Actually book the appointment in the calendar
+- search_faqs: Search the business's FAQ database for answers to questions
 
 For any complex medical questions or emergencies, politely explain that you'll transfer them to a staff member or have someone call them back.
 
@@ -187,6 +191,24 @@ Always confirm appointment details before booking and provide clear confirmation
                 }
               },
               required: ["user_id", "date", "time", "duration", "title", "caller_name", "caller_number"]
+            }
+          },
+          {
+            name: "search_faqs",
+            description: "Search the business's FAQ database for answers to questions",
+            parameters: {
+              type: "object",
+              properties: {
+                user_id: {
+                  type: "string",
+                  description: "The user ID to search FAQs for"
+                },
+                query: {
+                  type: "string",
+                  description: "The question or search query"
+                }
+              },
+              required: ["user_id", "query"]
             }
           }
         ] : []
