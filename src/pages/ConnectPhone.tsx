@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, CheckCircle, AlertCircle, Copy, ExternalLink, Lock, Bot, Settings } from 'lucide-react';
+import { Phone, CheckCircle, AlertCircle, Copy, ExternalLink, Lock, Bot, Settings, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useVapiAssistant } from '../hooks/useVapiAssistant';
