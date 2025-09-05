@@ -12,6 +12,8 @@ import GoogleCalendar from './pages/GoogleCalendar';
 import ConnectPhone from './pages/ConnectPhone';
 import BookingHistory from './pages/BookingHistory';
 import Appointments from './pages/Appointments';
+import IndustrySettings from './pages/IndustrySettings';
+import FAQManagement from './pages/FAQManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 
@@ -59,6 +61,20 @@ function App() {
           <ProtectedRoute>
             <DashboardLayout>
               <Appointments />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/industry-settings" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <IndustrySettings />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
+        <Route path="/faq-management" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <FAQManagement />
             </DashboardLayout>
           </ProtectedRoute>
         } />

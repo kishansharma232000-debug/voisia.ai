@@ -12,9 +12,12 @@ import {
   X,
   Crown,
   Circle,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Building2,
+  HelpCircle
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { INDUSTRY_CONFIGS } from '../types/industry';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -31,13 +34,19 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     navigate('/');
   };
 
+  // Get industry-specific labels
+  const industryConfig = INDUSTRY_CONFIGS[user?.industryType || 'clinic'];
+  const appointmentLabel = industryConfig.appointmentLabel;
+
   const navigation = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Connect Phone', href: '/connect-phone', icon: Phone },
     { name: 'Google Calendar', href: '/google-calendar', icon: Calendar },
     { name: 'Booking History', href: '/booking-history', icon: History },
-    { name: 'Appointments', href: '/appointments', icon: Calendar },
+    { name: appointmentLabel, href: '/appointments', icon: Calendar },
     { name: 'Call Logs', href: '/call-logs', icon: History },
+    { name: 'Industry Settings', href: '/industry-settings', icon: Building2 },
+    { name: 'FAQs', href: '/faq-management', icon: HelpCircle },
     { 
       name: 'Analytics', 
       href: '/analytics', 

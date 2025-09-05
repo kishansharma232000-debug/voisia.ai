@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { IndustryType, IndustrySettings } from '../types/industry';
 
 interface User {
   id: string;
@@ -15,6 +16,8 @@ interface User {
   language?: string;
   voiceStyle?: string;
   hasVapiAssistant?: boolean;
+  industryType?: IndustryType;
+  industrySettings?: IndustrySettings;
 }
 
 interface AuthContextType {
@@ -44,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchUserMeta = async (userId: string) => {
     const { data, error } = await supabase
       .from('users_meta')
-      .select('clinic_name, phone_number, clinic_connected, plan, assistant_active, google_connected')
+      .select('clinic_name, phone_number, clinic_connected, plan, assistant_active, google_connected, industry_type, industry_settings')
       .eq('id', userId)
       .single();
     
@@ -72,7 +75,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       timezone: 'America/New_York',
       language: 'English',
       voiceStyle: 'Friendly',
-      hasVapiAssistant: false
+      hasVapiAssistant: false,
+      industryType: userMeta?.industry_type || 'clinic',
+      industrySettings: userMeta?.industry_settings || {}
     };
   };
 
