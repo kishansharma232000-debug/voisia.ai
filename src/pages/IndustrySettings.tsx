@@ -14,7 +14,7 @@ import {
   OtherSettings
 } from '../types/industry';
 
-export default function IndustrySettings() {
+export default function IndustrySettingsPage() {
   const { user, refreshUser } = useAuth();
   const [selectedIndustry, setSelectedIndustry] = useState<IndustryType>(user?.industryType || 'clinic');
   const [settings, setSettings] = useState<IndustrySettings>(INDUSTRY_CONFIGS[selectedIndustry].defaultSettings);
