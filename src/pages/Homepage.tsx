@@ -454,39 +454,6 @@ export default function Homepage() {
             </div>
           </div>
 
-          {/* Build vs Buy Section */}
-          <div className="mt-16 bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-              Why Not Build It Yourself or Hire a Team?
-            </h3>
-            
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="text-lg font-semibold text-red-800 mb-4">Building your own AI voice agent involves:</h4>
-                <ul className="space-y-3 text-red-700">
-                  <li>• Hiring developers or a voice AI team</li>
-                  <li>• Managing backend and phone infrastructure</li>
-                  <li>• Spending $10,000+ upfront and months to launch</li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="text-lg font-semibold text-green-800 mb-4">With VoisiaAI:</h4>
-                <ul className="space-y-3 text-green-700">
-                  <li>❌ No setup cost</li>
-                  <li>❌ No technical overhead</li>
-                  <li>❌ No management required</li>
-                </ul>
-                <div className="mt-6 p-4 bg-green-100 rounded-lg">
-                  <p className="text-green-800 font-semibold">Just plug in and go live in minutes.</p>
-                  <p className="text-green-700">Perfect for solo professionals, small teams, and growing businesses.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* FAQ Section */}
       <section id="faq" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

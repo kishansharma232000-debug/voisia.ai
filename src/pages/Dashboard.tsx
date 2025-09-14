@@ -1,6 +1,5 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import AssistantSignupForm from '../components/AssistantSignupForm';
 import { useAssistantStatus } from '../hooks/useAssistantStatus';
 import { Building2, Phone, BarChart3, Settings } from 'lucide-react';
 
@@ -53,18 +52,6 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-
-        {/* Assistant Creation Form */}
-        {!hasAssistant && (
-          <div className="bg-white overflow-hidden shadow rounded-lg mb-6">
-            <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                Create Your AI Assistant
-              </h3>
-              <AssistantSignupForm />
-            </div>
-          </div>
-        )}
 
         {/* Dashboard Cards */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
