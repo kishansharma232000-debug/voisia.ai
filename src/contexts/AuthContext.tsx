@@ -44,24 +44,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchUserMeta = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('users_meta')
-      .select('clinic_name, phone_number, clinic_connected, plan, assistant_active, google_connected, industry_type, industry_settings')
-      .eq('id', userId)
-      .single();
-    
-    if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
-      console.error('Error fetching user meta:', error);
+  const fetchUserMeta = async (userId: string, timeoutMs: number = 5000) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const { data, error } = await supabase
+        .from('users_meta')
+        .select('clinic_name, phone_number, clinic_connected, plan, assistant_active, google_connected, industry_type, industry_settings')
+        .eq('id', userId)
+        .maybeSingle();
+
+      clearTimeout(timeoutId);
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching user meta:', error);
+        return null;
+      }
+
+      return data;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      console.error('Timeout or error fetching user meta:', error);
       return null;
     }
-    
-    return data;
   };
 
-  const createUserObject = async (supabaseUser: any) => {
-    const userMeta = await fetchUserMeta(supabaseUser.id);
-    
+  const createUserObject = (supabaseUser: any, userMeta: any = null) => {
     return {
       id: supabaseUser.id,
       name: supabaseUser.email?.split('@')[0] || 'User',
@@ -81,60 +90,82 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   };
 
+  const loadUserMetaInBackground = async (userId: string) => {
+    const userMeta = await fetchUserMeta(userId);
+    setUser(prev => {
+      if (!prev || prev.id !== userId) return prev;
+      return {
+        ...prev,
+        clinicName: userMeta?.clinic_name || prev.clinicName,
+        phoneNumber: userMeta?.phone_number || prev.phoneNumber,
+        clinicConnected: userMeta?.clinic_connected || prev.clinicConnected,
+        plan: userMeta?.plan || prev.plan,
+        assistantActive: userMeta?.assistant_active || prev.assistantActive,
+        googleConnected: userMeta?.google_connected || prev.googleConnected,
+        industryType: userMeta?.industry_type || prev.industryType,
+        industrySettings: userMeta?.industry_settings || prev.industrySettings
+      };
+    });
+  };
+
   const refreshUser = async () => {
     const { data: { user: supabaseUser } } = await supabase.auth.getUser();
     if (supabaseUser) {
-      const updatedUser = await createUserObject(supabaseUser);
-      setUser(updatedUser);
+      const basicUser = createUserObject(supabaseUser);
+      setUser(basicUser);
+      loadUserMetaInBackground(supabaseUser.id);
     }
   };
 
   useEffect(() => {
-    // Check for existing Supabase session
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        const userObj = await createUserObject(session.user);
-        setUser(userObj);
-      }
-      setIsLoading(false);
-    };
-    
-    getSession();
-    
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          const userObj = await createUserObject(session.user);
-          setUser(userObj);
-        } else {
-          setUser(null);
+          const basicUser = createUserObject(session.user);
+          setUser(basicUser);
+          loadUserMetaInBackground(session.user.id);
         }
+      } catch (error) {
+        console.error('Error loading session:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        (async () => {
+          if (session?.user) {
+            const basicUser = createUserObject(session.user);
+            setUser(basicUser);
+            loadUserMetaInBackground(session.user.id);
+          } else {
+            setUser(null);
+          }
+        })();
       }
     );
-    
+
     return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) throw error;
-    setIsLoading(false);
   };
 
   const signup = async (userData: any) => {
-    setIsLoading(true);
     const { data, error } = await supabase.auth.signUp({
       email: userData.email,
       password: userData.password,
     });
     if (error) throw error;
-    setIsLoading(false);
   };
 
   const updateAssistantStatus = async (active: boolean) => {

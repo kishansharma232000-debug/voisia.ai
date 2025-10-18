@@ -19,15 +19,16 @@ export default function Login() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    
+
+    navigate('/dashboard');
+
     try {
       const { data, error: loginError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      
+
       if (loginError) {
-        // Provide user-friendly error messages
         if (loginError.message.includes('Invalid login credentials')) {
           setError('Invalid email or password. Please check your credentials and try again.');
         } else if (loginError.message.includes('Email not confirmed')) {
@@ -35,12 +36,12 @@ export default function Login() {
         } else {
           setError(loginError.message);
         }
+        navigate('/login');
         return;
       }
-      
-      navigate('/dashboard');
     } catch (error) {
       setError('An unexpected error occurred. Please try again.');
+      navigate('/login');
     } finally {
       setIsLoading(false);
     }
