@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Phone, Eye, EyeOff, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -11,37 +11,31 @@ export default function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Get success message from signup redirect
+  const { user, login } = useAuth();
+
   const successMessage = location.state?.message;
+
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    navigate('/dashboard');
-
     try {
-      const { data, error: loginError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (loginError) {
-        if (loginError.message.includes('Invalid login credentials')) {
-          setError('Invalid email or password. Please check your credentials and try again.');
-        } else if (loginError.message.includes('Email not confirmed')) {
-          setError('Please check your email and click the confirmation link before signing in.');
-        } else {
-          setError(loginError.message);
-        }
-        navigate('/login');
-        return;
+      await login(email, password);
+    } catch (err: any) {
+      if (err?.message?.includes('Invalid login credentials')) {
+        setError('Invalid credentials or network error. Please try again.');
+      } else if (err?.message?.includes('Email not confirmed')) {
+        setError('Please check your email and click the confirmation link before signing in.');
+      } else {
+        setError(err?.message || 'An unexpected error occurred. Please try again.');
       }
-    } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
-      navigate('/login');
     } finally {
       setIsLoading(false);
     }

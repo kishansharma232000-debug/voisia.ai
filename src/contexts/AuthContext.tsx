@@ -138,12 +138,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         (async () => {
-          if (session?.user) {
+          if (event === 'SIGNED_OUT' || !session?.user) {
+            setUser(null);
+            localStorage.removeItem('voisiaai-auth');
+            if (event === 'SIGNED_OUT') {
+              window.location.href = '/login?message=Session+expired.+Please+log+in+again.';
+            }
+          } else if (session?.user) {
             const basicUser = createUserObject(session.user);
             setUser(basicUser);
             loadUserMetaInBackground(session.user.id);
-          } else {
-            setUser(null);
           }
         })();
       }
@@ -153,11 +157,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
+    let lastError = null;
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          lastError = error;
+          continue;
+        }
+
+        return;
+      } catch (error: any) {
+        lastError = error;
+
+        if (attempt === 0 && error?.message?.includes('fetch failed')) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          continue;
+        }
+        throw error;
+      }
+    }
+
+    if (lastError) throw lastError;
   };
 
   const signup = async (userData: any) => {
@@ -165,7 +191,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: userData.email,
       password: userData.password,
     });
-    if (error) throw error;
+
+    if (error) {
+      if (error.message?.includes('already registered') ||
+          error.message?.includes('User already exists')) {
+        const dupError = new Error('An account with this email already exists. Please log in instead.');
+        (dupError as any).code = 'USER_EXISTS';
+        throw dupError;
+      }
+      throw error;
+    }
   };
 
   const updateAssistantStatus = async (active: boolean) => {
@@ -191,9 +226,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
-    supabase.auth.signOut();
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
     setUser(null);
+    localStorage.removeItem('voisiaai-auth');
   };
 
   return (

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Phone, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -12,6 +12,13 @@ export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { user, signup } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, navigate]);
 
   const isGmailEmail = (email: string) => {
     const gmailPattern = /^[a-zA-Z0-9._%+-]+@(gmail\.com|[a-zA-Z0-9.-]+\.googlemail\.com|[a-zA-Z0-9.-]+\.google\.com)$/i;
@@ -23,47 +30,39 @@ export default function Signup() {
       ...prev,
       [e.target.name]: e.target.value
     }));
-    // Clear error when user starts typing
     if (error) setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
-    // Validate Gmail email
+
     if (!isGmailEmail(formData.email)) {
       setError('Please use a Gmail or Google Workspace email address');
       return;
     }
-    
-    // Validate password
+
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long');
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
-      const { data, error: signupError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
+      await signup(formData);
+
+      navigate('/login', {
+        state: {
+          message: 'Account created successfully! Please sign in to continue.'
+        }
       });
-      
-      if (signupError) {
-        setError(signupError.message);
-        return;
+    } catch (err: any) {
+      if (err?.code === 'USER_EXISTS' || err?.message?.includes('already exists')) {
+        setError('An account with this email already exists. Please log in instead.');
+      } else {
+        setError(err?.message || 'An unexpected error occurred. Please try again.');
       }
-      
-      // Redirect to login page after successful signup
-      navigate('/login', { 
-        state: { 
-          message: 'Account created successfully! Please sign in to continue.' 
-        } 
-      });
-    } catch (error) {
-      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
