@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { BarChart3, TrendingUp, Phone, Calendar, Clock, Users, Lock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { BarChart3, TrendingUp, Phone, Calendar, Clock, Users, Lock, Zap } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Analytics() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [timeRange, setTimeRange] = useState('month');
 
   const hasAnalyticsAccess = user?.plan === 'pro' || user?.plan === 'business';
   const hasActivePlan = user?.plan !== null;
+
+  const handleUpgradeClick = () => {
+    navigate('/pricing');
+  };
 
   const stats = [
     { title: 'Total Calls', value: hasAnalyticsAccess ? '1,247' : '0', change: '+12%', color: 'text-blue-600' },
@@ -29,8 +34,8 @@ export default function Analytics() {
               <p className="text-yellow-700">Upgrade to Pro or Business plan to access detailed analytics and insights.</p>
             </div>
           </div>
-          <button className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
-            <span>Contact Sales</span>
+          <button onClick={handleUpgradeClick} className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
+            <span>View Plans</span>
           </button>
         </div>
       )}
@@ -45,8 +50,8 @@ export default function Analytics() {
               <p className="text-blue-700">Upgrade to Pro or Business to access call analytics and detailed insights.</p>
             </div>
           </div>
-          <button className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
-            <span>Contact Sales</span>
+          <button onClick={handleUpgradeClick} className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+            <span>View Plans</span>
           </button>
         </div>
       )}

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Calendar, User, Clock, Phone, Filter, Search, MoreVertical, CheckCircle, X, Lock, RefreshCw } from 'lucide-react';
+import { Calendar, User, Clock, Phone, Filter, Search, MoreVertical, CheckCircle, X, Lock, RefreshCw, Zap } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { useAppointments } from '../hooks/useAppointments';
 import type { Appointment } from '../types/appointments';
 import { INDUSTRY_CONFIGS } from '../types/industry';
 
 export default function Appointments() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const {
     appointments,
     stats,
@@ -24,6 +26,10 @@ export default function Appointments() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const hasActivePlan = user?.plan !== null;
+
+  const handleUpgradeClick = () => {
+    navigate('/pricing');
+  };
   
   // Get industry-specific labels
   const industryConfig = INDUSTRY_CONFIGS[user?.industryType || 'clinic'];
@@ -102,21 +108,6 @@ export default function Appointments() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Plan Required Notice */}
-      {!hasActivePlan && (
-        <div className="mb-8 bg-yellow-50 border border-yellow-200 rounded-xl p-6">
-          <div className="flex items-center space-x-3 mb-4">
-            <Lock className="w-6 h-6 text-yellow-600" />
-            <div>
-              <h3 className="text-lg font-semibold text-yellow-800">Plan Required</h3>
-              <p className="text-yellow-700">Upgrade your plan to access appointment management and booking history.</p>
-            </div>
-          </div>
-          <button className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
-            <span>Contact Sales</span>
-          </button>
-        </div>
-      )}
 
       <div className="mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -363,15 +354,7 @@ export default function Appointments() {
                 </table>
               )}
             </>
-          ) : (
-            <div className="text-center py-16">
-              <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 font-medium mb-4">{appointmentLabel} management requires an active plan</p>
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
-                Contact Sales
-              </button>
-            </div>
-          )}
+          ) : null}
         </div>
 
         {/* Pagination */}
@@ -397,6 +380,22 @@ export default function Appointments() {
           </div>
         )}
       </div>
+
+      {/* Upgrade CTA */}
+      {!hasActivePlan && (
+        <div className="mt-8 text-center p-8 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+          <Lock className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">Manage Your Appointments</h3>
+          <p className="text-gray-600 mb-6">Access appointment management, booking history, and track all bookings made through your AI assistant.</p>
+          <button
+            onClick={handleUpgradeClick}
+            className="inline-flex items-center space-x-2 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+          >
+            <Zap className="w-5 h-5" />
+            <span>Upgrade Plan to Unlock</span>
+          </button>
+        </div>
+      )}
 
       {/* Quick Actions */}
       {hasActivePlan && (
