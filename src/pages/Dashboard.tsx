@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useAssistantStatus } from '../hooks/useAssistantStatus';
+import { useClinicPhoneNumber } from '../hooks/useClinicPhoneNumber';
 import { Building2, Phone, BarChart3, Settings, ArrowRight, Activity, Zap, Users, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LoadingSkeleton from '../components/LoadingSkeleton';
+import PhoneNumberWidget from '../components/PhoneNumberWidget';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { hasAssistant, loading } = useAssistantStatus();
+  const { clinicNumber, loading: phoneLoading, error: phoneError, purchasePhoneNumber } = useClinicPhoneNumber(user?.id);
+  const [purchasingNumber, setPurchasingNumber] = useState(false);
+
+  const handlePurchaseNumber = async () => {
+    if (!user?.id) return;
+    try {
+      setPurchasingNumber(true);
+      await purchasePhoneNumber(user.id);
+    } catch (error) {
+      console.error('Error purchasing number:', error);
+    } finally {
+      setPurchasingNumber(false);
+    }
+  };
 
   if (loading) {
     return <LoadingSkeleton />;
@@ -45,6 +61,19 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Phone Number Widget */}
+      {hasAssistant && (
+        <div className="mb-8">
+          <PhoneNumberWidget
+            phoneNumber={clinicNumber?.telnyx_number || null}
+            loading={phoneLoading || purchasingNumber}
+            error={phoneError}
+            onPurchase={handlePurchaseNumber}
+            hasActivePlan={!!user?.plan}
+          />
+        </div>
+      )}
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">

@@ -18,6 +18,7 @@ interface User {
   hasVapiAssistant?: boolean;
   industryType?: IndustryType;
   industrySettings?: IndustrySettings;
+  telnyxNumber?: string;
 }
 
 interface AuthContextType {
