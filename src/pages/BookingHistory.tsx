@@ -86,8 +86,8 @@ export default function BookingHistory() {
               <p className="text-yellow-700">Upgrade your plan to access booking history and appointment management.</p>
             </div>
           </div>
-          <button className="inline-flex items-center space-x-2 bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition-colors font-semibold">
-            <span>Contact Sales</span>
+          <button className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+            <span>Upgrade Plan</span>
           </button>
         </div>
       )}
@@ -233,7 +233,7 @@ export default function BookingHistory() {
               <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 font-medium mb-4">Booking history requires an active plan</p>
               <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
-                Contact Sales
+                Upgrade Plan
               </button>
             </div>
           )}
